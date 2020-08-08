@@ -6,15 +6,12 @@ document.querySelectorAll('.tab-content').forEach((el) => {
   el.style.display = el.id === 'tab-content-home' ? 'block' : 'none';
 });
 
-// document.querySelector('button[data-theme-toggle]').addEventListener('click', _ => {
-//   if (chromeTabsEl.classList.contains('chrome-tabs-dark-theme')) {
-//     document.documentElement.classList.remove('dark-theme')
-//     chromeTabsEl.classList.remove('chrome-tabs-dark-theme')
-//   } else {
-//     document.documentElement.classList.add('dark-theme')
-//     chromeTabsEl.classList.add('chrome-tabs-dark-theme')
-//   }
-// })
+if (win.store.getTabTheme() === 'Dark') {
+  if (!chromeTabsEl.classList.contains('chrome-tabs-dark-theme')) {
+    document.documentElement.classList.add('dark-theme')
+    chromeTabsEl.classList.add('chrome-tabs-dark-theme')
+  }
+}
 
 ipcRenderer.on('change-tab-theme', function (event, theme) {
   if (theme === 'Light') {
@@ -66,7 +63,7 @@ chromeTabsEl.addEventListener('tabRemove', ({detail}) => {
   const tabContainerId = 'tab-content-' + detail.tabEl.id;
   document.getElementById('containers')
   .removeChild(document.getElementById(tabContainerId));
-
+  delete terms[detail.tabEl.id];
   // if (chromeTabs.tabEls.length === 0) {
   //   win.close();
   // }
