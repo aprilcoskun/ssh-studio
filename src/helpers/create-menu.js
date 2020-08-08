@@ -6,7 +6,7 @@ const store = require('./store');
 const isMac = process.platform === 'darwin';
 
 contextMenu({
-  menu: (defaultActions, props, browserWindow, dictionarySuggestions) => [
+  menu: (defaultActions) => [
     defaultActions.cut(),
     defaultActions.copy(),
     defaultActions.paste(),
@@ -68,7 +68,7 @@ module.exports = function createNewMenu(launchShell, launchAddNewWindow, changeT
       label: 'View',
       submenu: [
         { role: 'togglefullscreen' },
-        { role: 'toggleDevTools' },
+        ...(app.isPackaged ? [] : [{ role: 'toggleDevTools' }]),
         { type: 'separator' },
         {
           label: 'Themes',

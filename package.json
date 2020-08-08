@@ -34,6 +34,12 @@
   "build": {
     "appId": "com.nisancoskun.ssh-studio",
     "productName": "SSH Studio",
-    "copyright": "Copyright © 2020 Nisan Coşkun"
+    "copyright": "Copyright © 2020 Nisan Coşkun",
+    "linux": {
+      "category": "Network"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools"
+    }
   }
 }

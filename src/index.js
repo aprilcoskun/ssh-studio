@@ -1,22 +1,21 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-const { mkdir, exists } = require('fs');
+// const { mkdir, exists } = require('fs');
 const store = require('./helpers/store');
 const { addNewWindowOptions, welcomeWindowOptions, shellWindowOptions } = require('./helpers/default-window-options');
 const createNewMenu = require('./helpers/create-menu');
-    
 // Create records folder if not exists
-const recordsFolderPath = app.getPath('userData') + '/session-records';
-exists(recordsFolderPath, function (exists) {
-  if (!exists) {
-    console.log('Creating records folder...');
-    mkdir(recordsFolderPath, function (error) {
-      if (error) {
-        console.error(error);
-        throw error;
-      }
-    });
-  }
-});
+// const recordsFolderPath = app.getPath('userData') + '/session-records';
+// exists(recordsFolderPath, function (exists) {
+//   if (!exists) {
+//     console.log('Creating records folder...');
+//     mkdir(recordsFolderPath, function (error) {
+//       if (error) {
+//         console.error(error);
+//         throw error;
+//       }
+//     });
+//   }
+// });
 
 let { menu, menuConnections } = createNewMenu(launchShell, launchAddNewWindow, changeTheme, changeTabTheme);
 
@@ -30,7 +29,7 @@ let shellWindow = null;
 let addNewWindow = null;
 
 app.on('ready', function () {
-  welcomeWindow = new BrowserWindow(welcomeWindowOptions);
+  welcomeWindow = new BrowserWindow(welcomeWindowOptions(!app.isPackaged));
   welcomeWindow.connections = menuConnections;
 
   welcomeWindow.setMenu(menu);
@@ -48,7 +47,7 @@ app.on('ready', function () {
 
 function launchShell(conn) {
   if (shellWindow === null) {
-    shellWindow = new BrowserWindow(shellWindowOptions);
+    shellWindow = new BrowserWindow(shellWindowOptions(!app.isPackaged));
     shellWindow.initConn = conn;
     shellWindow.store = store;
 
@@ -71,7 +70,7 @@ function launchShell(conn) {
 
 function launchAddNewWindow() {
   if (addNewWindow === null) {
-    addNewWindow = new BrowserWindow(addNewWindowOptions);
+    addNewWindow = new BrowserWindow(addNewWindowOptions(!app.isPackaged));
     addNewWindow.saveNewConnection = saveNewConnection;
     addNewWindow.saveNewConnectionAndOpen = saveNewConnectionAndOpen;
     addNewWindow.loadURL(`file://${__dirname}/windows/add-new/add-new.html`);
