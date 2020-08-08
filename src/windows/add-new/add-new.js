@@ -21,7 +21,7 @@ function save() {
   }
 
   if (!conn.port || isNaN(conn.port) || conn.port > 65535 || conn.port < 2) {
-    return alert('Please enter a valid port');
+    return alert('Please enter a valid Port Number');
   }
 
   require('electron').remote.getCurrentWindow().saveNewConnection(conn);
@@ -42,7 +42,7 @@ function saveAndOpen() {
   }
 
   if (!conn.port || isNaN(conn.port) || conn.port > 65535 || conn.port < 2) {
-    return alert('Please enter a valid Port');
+    return alert('Please enter a valid Port Number');
   }
 
   require('electron').remote.getCurrentWindow().saveNewConnectionAndOpen(conn);

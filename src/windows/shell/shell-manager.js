@@ -21,16 +21,19 @@ function createTerminal(connection, containerElement) {
     fontSize: 12,
     fontFamily:
       'Consolas, Menlo, Monaco, Lucida Console, Courier New, monospace, serif',
-    theme
+    theme,
   });
-  document.getElementById('containers').style.backgroundColor = theme.background;
+  document.getElementById('containers').style.backgroundColor =
+    theme.background;
 
   const fitAddon = new FitAddon();
   term.loadAddon(fitAddon);
-  term.loadAddon(new WebLinksAddon((event, uri) => {
-    event.preventDefault();
-    electronShell.openExternal(uri);
-  }));
+  term.loadAddon(
+    new WebLinksAddon((event, uri) => {
+      event.preventDefault();
+      electronShell.openExternal(uri);
+    })
+  );
   term.open(containerElement);
   term.loadAddon(new WebglAddon());
   fitAddon.fit();
@@ -38,30 +41,33 @@ function createTerminal(connection, containerElement) {
   if (connection.type === 'SSH') {
     const conn = new Client();
     conn.on('ready', () => {
-      conn.shell({ term: 'xterm', cols: term.cols, rows: term.rows }, (err, stream) => {
-        if (err) {
-          onError(err);
-          conn.end();
-        }
-
-        stream.on('close', (code, signal) => {
-          if (code || signal) {
-            onError(
-              term,
-              (code ? `Code ${code} ` : '') + (signal ? `Signal ${signal}` : '')
-            );
+      conn.shell(
+        { term: 'xterm', cols: term.cols, rows: term.rows },
+        (err, stream) => {
+          if (err) {
+            onError(err);
+            conn.end();
           }
-          conn.end();
-        });
-        stream.on('data', (data) => term.write(data));
 
-        term.setOption('disableStdin', false);
-        term.onData((data) => stream.write(data));
-        term.focus();
-        term.scrollToBottom();
-        term.onResize(({ cols, rows }) => stream.setWindow(rows, cols));
-        terms[connection.name] = { term, fitAddon };
-      });
+          stream.on('close', (code, signal) => {
+            if (code || signal) {
+              onError(
+                term,
+                (code ? `Code ${code} ` : '') +
+                  (signal ? `Signal ${signal}` : '')
+              );
+            }
+            conn.end();
+          });
+          stream.on('data', (data) => term.write(data));
+
+          term.setOption('disableStdin', false);
+          term.onData((data) => stream.write(data));
+          term.focus();
+          term.scrollToBottom();
+          term.onResize(({ cols, rows }) => stream.setWindow(rows, cols));
+        }
+      );
     });
 
     conn.on(
@@ -100,6 +106,7 @@ function createTerminal(connection, containerElement) {
       port: connection.port,
       tryKeyboard: true,
     });
+    terms[connection.name] = { term, fitAddon };
   } else {
     const conn = require('net').connect(connection.port, connection.host);
     conn.on('connect', () => {
@@ -137,8 +144,8 @@ function createTerminal(connection, containerElement) {
 function onError(term, err) {
   term.setOption('disableStdin', true);
   if (err) {
-      term.writeln(chalk.red(`Error: ${err.message}`));
-      if (err.message) {
+    term.writeln(chalk.red(`Error: ${err.message}`));
+    if (err.message) {
       term.writeln(chalk.red(`Error: ${err.message}`));
     } else {
       term.writeln(chalk.red(`Error: ${err}`));
@@ -150,7 +157,11 @@ function onError(term, err) {
 
 window.addEventListener(
   'resize',
-  () => Object.values(terms).forEach((t) => t.fitAddon.fit()),
+  () =>
+    Object.values(terms).forEach((term) => {
+      const tabContainerId = 'tab-content-' + detail.tabEl.id;
+      term.fitAddon.fit();
+    }),
   false
 );
 
@@ -158,5 +169,6 @@ ipcRenderer.on('change-theme', function (event, theme) {
   Object.values(terms).forEach((term) => {
     term.term.setOption('theme', themes[theme]);
   });
-  document.getElementById('containers').style.backgroundColor = themes[theme].background;
+  document.getElementById('containers').style.backgroundColor =
+    themes[theme].background;
 });
