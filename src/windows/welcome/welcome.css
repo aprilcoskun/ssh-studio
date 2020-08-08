@@ -18,6 +18,16 @@ body {
   align-items: center;
   display: flex;
   flex-direction: column;
+  padding-bottom: 24px;
+}
+
+#brand > h2 {
+  font-weight: 400;
+}
+
+#brand > div {
+  font-weight: 300;
+  font-size: 16px;
 }
 
 #greetingBox {
