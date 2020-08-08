@@ -159,8 +159,10 @@ window.addEventListener(
   'resize',
   () =>
     Object.values(terms).forEach((term) => {
-      const tabContainerId = 'tab-content-' + detail.tabEl.id;
+      const displayStatus = term.term.element.parentElement.style.display;
+      term.term.element.parentElement.style.display = 'block';
       term.fitAddon.fit();
+      term.term.element.parentElement.style.display = displayStatus;
     }),
   false
 );
