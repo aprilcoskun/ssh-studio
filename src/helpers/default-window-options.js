@@ -4,14 +4,12 @@ module.exports.welcomeWindowOptions = {
   height: 400,
   center: true,
   resizable: false,
-  webPreferences: {
-    defaultFontFamily: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-      'Segoe UI Symbol'`,
+    webPreferences: {
+    enableRemoteModule: true,
     nodeIntegration: true,
     enableWebSQL: false,
     webaudio: false,
-    devTools: true,
+    devTools: false,
     webgl: false,
   },
 }
@@ -24,7 +22,8 @@ module.exports.shellWindowOptions = {
   minHeight: 320,
   center: true,
   titleBarStyle: 'hiddenInset',
-  webPreferences: {
+    webPreferences: {
+    enableRemoteModule: true,
     nodeIntegration: true,
     enableWebSQL: false,
     webaudio: false,
@@ -41,13 +40,11 @@ module.exports.addNewWindowOptions = {
   center: true,
   resizable: false,
   webPreferences: {
-    defaultFontFamily: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol'`,
+    enableRemoteModule: true,
     nodeIntegration: true,
     enableWebSQL: false,
     webaudio: false,
-    devTools: true,
+    devTools: false,
     webgl: false,
     images: false,
   },

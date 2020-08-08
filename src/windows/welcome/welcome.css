@@ -2,6 +2,9 @@ body {
   margin: 0;
   width: 100vw;
   height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+  'Segoe UI Symbol' !important;
 }
 
 #Greeting {
@@ -42,7 +45,7 @@ body {
 }
 
 #connBox hr {
-  width: 50%;
+  width: 40%;
 }
 
 .connection {
