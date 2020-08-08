@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  width: 100vw; 
+  height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+  'Segoe UI Emoji', 'Segoe UI Symbol' !important;
+}
+
+#containers {
+  height: 100%;
+  overflow: hidden;
+}
+
+#containers > div {
+  height: calc(100% - 34px);
+  margin-top: 34px;
+  overflow: hidden;
+}

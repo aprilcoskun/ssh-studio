@@ -1,0 +1,39 @@
+{
+  "name": "ssh-studio",
+  "version": "1.7.0",
+  "description": "SSH & Telnet Client",
+  "homepage": "https://github.com/aprilcoskun/ssh-studio",
+  "author": {
+    "name": "Nisan Coşkun",
+    "email": "info@nisancoskun.com"
+  },
+  "main": "src/index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "npm run electron:serve",
+    "electron:serve": "electron . --serve",
+    "electron:local": "electron .",
+    "electron:build": "electron-builder build"
+  },
+  "devDependencies": {
+    "electron": "^9.2.0",
+    "electron-builder": "22.7.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "draggabilly": "^2.3.0",
+    "electron-context-menu": "^2.3.0",
+    "electron-store": "6.0.0",
+    "jquery": "^3.5.1",
+    "ssh2": "^0.8.9",
+    "xterm": "4.8.1",
+    "xterm-addon-fit": "^0.4.0",
+    "xterm-addon-web-links": "^0.4.0",
+    "xterm-addon-webgl": "^0.8.0"
+  },
+  "build": {
+    "appId": "com.nisancoskun.ssh-studio",
+    "productName": "SSH Studio",
+    "copyright": "Copyright © 2020 Nisan Coşkun"
+  }
+}

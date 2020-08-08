@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./pure.css" />
+    <link rel="stylesheet" href="./add-new.css" />
+  </head>
+
+  <body>
+    <form class="pure-form pure-form-stacked" style="padding: 12px;">
+      <fieldset>
+        <div class="pure-g">
+            <label for="aligned-name" class="pure-u-1-5 center">Name</label>
+            <input type="text" id="aligned-name" placeholder="Name" required class="pure-u-4-5"/>
+        </div>
+        <div class="pure-g">
+          <label for="aligned-host" class="pure-u-1-5 center">Host</label>
+          <input type="text" id="aligned-host" placeholder="Host" required class="pure-u-4-5"/>
+        </div>
+        <div class="pure-g">
+          <label for="aligned-user" class="pure-u-1-5 center">Username</label>
+          <input type="text" id="aligned-user" placeholder="Username" required class="pure-u-4-5"/>
+        </div>
+        <div class="pure-g">
+            <label for="aligned-password" class="pure-u-1-5 center">Password</label>
+            <input type="password" id="aligned-password" placeholder="Password" class="pure-u-4-5"/>
+        </div>
+        <div class="pure-g">
+            <label for="aligned-port" class="pure-u-1-5 center">Port</label>
+            <input type="number" id="aligned-port" placeholder="Port" required class="pure-u-4-5"/>
+        </div>
+        <div class="pure-g">
+          <label for="aligned-type" class="pure-u-1-5">Type</label>
+          <select id="aligned-type" required class="pure-u-4-5">
+            <option selected>SSH</option>
+            <option>Telnet</option>
+          </select>
+        </div>
+        <div class="pure-g">
+            <button type="button" class="pure-u-1-2" onclick="javascript:save()">Save</button>
+            <button type="button" class="pure-u-1-2" onclick="javascript:saveAndOpen()">Save & Open</button>
+        </div>
+      </fieldset>
+  </form>
+  <script src="./add-new.js"></script>
+  </body>
+</html>
