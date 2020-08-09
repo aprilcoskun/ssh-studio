@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 // const { mkdir, exists } = require('fs');
 const store = require('./helpers/store');
+store.initStore();
+
 const { addNewWindowOptions, welcomeWindowOptions, shellWindowOptions } = require('./helpers/default-window-options');
 const createNewMenu = require('./helpers/create-menu');
 // Create records folder if not exists

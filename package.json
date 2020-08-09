@@ -1,6 +1,6 @@
 {
   "name": "ssh-studio",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "SSH & Telnet Client",
   "homepage": "https://github.com/aprilcoskun/ssh-studio",
   "author": {
@@ -13,11 +13,14 @@
     "start": "npm run electron:serve",
     "electron:serve": "electron . --serve",
     "electron:local": "electron .",
-    "electron:build": "electron-builder build"
+    "electron:build": "electron-builder build",
+    "electron:build:all": "electron-builder build --all",
+    "electron:build:win": "electron-builder build --win",
+    "electron:build:linux": "electron-builder build --linux"
   },
   "devDependencies": {
     "electron": "^9.2.0",
-    "electron-builder": "22.7.0"
+    "electron-builder": "^22.8.0"
   },
   "dependencies": {
     "chalk": "^4.1.0",

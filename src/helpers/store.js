@@ -45,17 +45,28 @@ const store = new Store({
       type: 'object',
       properties: {
         theme: { type: 'string', default: 'defaultLightTheme' },
-        tabTheme: { type: 'string', default: 'light' },
+        tabTheme: { type: 'string', default: 'Light' },
       },
     },
   },
 });
+
+module.exports.initStore = function initStore() {
+  if (!store.get('settings')) {
+    store.set('settings', { theme: 'defaultLightTheme', tabTheme: 'Light'});
+  }
+
+  if (!store.get('connections')) {
+    store.set('connections', []);
+  }
+}
 
 module.exports.getConnections = function getConnections() {
   return store.get('connections');
 };
 
 module.exports.getTheme = function getTheme() {
+  const settings = store.get('settings');
   return store.get('settings').theme;
 };
 
@@ -112,30 +123,3 @@ module.exports.editConnection = function editConnection(connection) {
   store.set('connections', connections);
   return connections;
 };
-
-// store.addToConnections({
-//   username: 'root',
-//   type: 'SSH',
-//   port: 22,
-//   host: 'nisancoskun.com',
-//   password: '12a23a34A',
-//   name: 'Ubuntu Server'
-// });
-
-// store.addToConnections({
-//   username: 'root',
-//   type: 'SSH',
-//   port: 22,
-//   host: '192.168.0.42',
-//   password: 'Asd*12345',
-//   name: 'Centos Server'
-// });
-
-// store.addToConnections({
-//   username: 'admin',
-//   type: 'SSH',
-//   port: 22,
-//   host: '192.168.1.1',
-//   password: '1234',
-//   name: 'Zyxel Home Router'
-// });
