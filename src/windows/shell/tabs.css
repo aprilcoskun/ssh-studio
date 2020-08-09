@@ -1,12 +1,12 @@
 .chrome-tabs {
   font-size: 12px;
   height: 32px;
-  padding: 8px 3px 0 3px;
   background: #dee1e6;
   overflow: hidden;
   padding-left: 2px;
   padding-right: 12px;
-  padding-top: 2px;
+  padding-top: 0;
+  padding-bottom: 0;
   margin-left: 0;
   margin-right: 0;
   margin-bottom: 0;
@@ -137,18 +137,6 @@
   white-space: nowrap;
   margin-left: 4px;
   color: #5f6368;
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    #000 0%,
-    #000 calc(100% - 24px),
-    transparent
-  );
-  mask-image: linear-gradient(
-    90deg,
-    #000 0%,
-    #000 calc(100% - 24px),
-    transparent
-  );
 }
 .chrome-tabs .chrome-tab[is-small] .chrome-tab-title {
   margin-left: 0;

@@ -14,7 +14,7 @@
     "electron:serve": "electron . --serve",
     "electron:local": "electron .",
     "electron:build": "electron-builder build",
-    "electron:build:all": "electron-builder build --all",
+    "electron:build:all": "electron-builder build -mwl",
     "electron:build:win": "electron-builder build --win",
     "electron:build:linux": "electron-builder build --linux"
   },
