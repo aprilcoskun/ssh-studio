@@ -15,7 +15,12 @@ contextMenu({
   ],
 });
 
-module.exports = function createNewMenu(launchShell, launchAddNewWindow, changeTheme, changeTabTheme) {
+module.exports = (
+  launchShell,
+  launchAddNewWindow,
+  changeTheme,
+  changeTabTheme
+) => {
   const menuConnections = [];
   const terminalTheme = store.getTheme();
   const tabTheme = store.getTabTheme();
@@ -87,8 +92,7 @@ module.exports = function createNewMenu(launchShell, launchAddNewWindow, changeT
                   label: 'Dark',
                   checked: tabTheme === 'Dark',
                   click: changeTabTheme,
-
-                }
+                },
               ],
             },
             {

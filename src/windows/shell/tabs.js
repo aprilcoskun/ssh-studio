@@ -10,14 +10,11 @@
   const TAB_CONTENT_MARGIN = 9
   const TAB_CONTENT_OVERLAP_DISTANCE = 1
 
-  const TAB_CONTENT_MIN_WIDTH = 24
-  const TAB_CONTENT_MAX_WIDTH = 200
-
   const TAB_SIZE_SMALL = 84
   const TAB_SIZE_SMALLER = 60
   const TAB_SIZE_MINI = 48
 
-  const noop = _ => {}
+  const noop = () => {}
 
   const closest = (value, array) => {
     let closest = Infinity
@@ -44,10 +41,6 @@
     </div>
   `
 
-  const defaultTapProperties = {
-    title: 'New tab'
-  }
-
   let instanceId = 0
 
   class ChromeTabs {
@@ -59,7 +52,6 @@
       this.el.setAttribute('data-chrome-tabs-instance-id', this.instanceId)
       ++instanceId
 
-      this.setupCustomProperties()
       this.setupStyleEl()
       this.setupEvents()
       this.layoutTabs()
@@ -68,10 +60,6 @@
 
     emit(eventName, data) {
       this.el.dispatchEvent(new CustomEvent(eventName, { detail: data}))
-    }
-
-    setupCustomProperties() {
-      this.el.style.setProperty('--tab-content-margin', `${ TAB_CONTENT_MARGIN }px`)
     }
 
     setupStyleEl() {
@@ -98,39 +86,24 @@
       return this.el.querySelector('.chrome-tabs-content')
     }
 
-    get tabContentWidths() {
+    get tabContentWidth() {
       const numberOfTabs = this.tabEls.length
       const tabsContentWidth = this.tabContentEl.clientWidth
       const tabsCumulativeOverlappedWidth = (numberOfTabs - 1) * TAB_CONTENT_OVERLAP_DISTANCE
       const targetWidth = (tabsContentWidth - (2 * TAB_CONTENT_MARGIN) + tabsCumulativeOverlappedWidth) / numberOfTabs
-      const clampedTargetWidth = Math.max(TAB_CONTENT_MIN_WIDTH, Math.min(TAB_CONTENT_MAX_WIDTH, targetWidth))
-      const flooredClampedTargetWidth = Math.floor(clampedTargetWidth)
-      const totalTabsWidthUsingTarget = (flooredClampedTargetWidth * numberOfTabs) + (2 * TAB_CONTENT_MARGIN) - tabsCumulativeOverlappedWidth
-      const totalExtraWidthDueToFlooring = tabsContentWidth - totalTabsWidthUsingTarget
-
-      // TODO - Support tabs with different widths / e.g. "pinned" tabs
-      const widths = []
-      let extraWidthRemaining = totalExtraWidthDueToFlooring
-      for (let i = 0; i < numberOfTabs; i += 1) {
-        const extraWidth = flooredClampedTargetWidth < TAB_CONTENT_MAX_WIDTH && extraWidthRemaining > 0 ? 1 : 0
-        widths.push(flooredClampedTargetWidth + extraWidth)
-        if (extraWidthRemaining > 0) extraWidthRemaining -= 1
-      }
-
-      return widths
+      return targetWidth;
     }
 
     get tabContentPositions() {
       const positions = []
-      const tabContentWidths = this.tabContentWidths
-      const tabContentWidthsLength = tabContentWidths.length
+      const tabContentWidth = this.tabContentWidth
+      const tabsLength = this.tabEls.length
       let position = TAB_CONTENT_MARGIN
 
-      for (let i = 0; i < tabContentWidthsLength; i++) {
-        const width = tabContentWidths[i];
+      for (let i = 0; i < tabsLength; i++) {
         const offset = i * TAB_CONTENT_OVERLAP_DISTANCE
         positions.push(position - offset)
-        position += width
+        position += tabContentWidth
       }
 
       return positions
@@ -147,21 +120,20 @@
     }
 
     layoutTabs() {
-      const tabContentWidths = this.tabContentWidths
+      const tabContentWidth = this.tabContentWidth
       const tabElsLength = this.tabEls.length
       for (let i = 0; i < tabElsLength; i++) {
         const tabEl = this.tabEls[i];
-        const contentWidth = tabContentWidths[i]
-        const width = contentWidth + (2 * TAB_CONTENT_MARGIN)
+        const width = tabContentWidth + (2 * TAB_CONTENT_MARGIN)
 
-        tabEl.style.width = width + 'px'
+        tabEl.style.width = `${width}px`
         tabEl.removeAttribute('is-small')
         tabEl.removeAttribute('is-smaller')
         tabEl.removeAttribute('is-mini')
 
-        if (contentWidth < TAB_SIZE_SMALL) tabEl.setAttribute('is-small', '')
-        if (contentWidth < TAB_SIZE_SMALLER) tabEl.setAttribute('is-smaller', '')
-        if (contentWidth < TAB_SIZE_MINI) tabEl.setAttribute('is-mini', '')
+        if (tabContentWidth < TAB_SIZE_SMALL) tabEl.setAttribute('is-small', '')
+        if (tabContentWidth < TAB_SIZE_SMALLER) tabEl.setAttribute('is-smaller', '')
+        if (tabContentWidth < TAB_SIZE_MINI) tabEl.setAttribute('is-mini', '')
       }
 
       let styleHTML = ''
@@ -208,10 +180,6 @@
 
     get activeTabEl() {
       return this.el.querySelector('.chrome-tab[active]')
-    }
-
-    hasActiveTab() {
-      return !!this.activeTabEl
     }
 
     setCurrentTab(tabEl) {

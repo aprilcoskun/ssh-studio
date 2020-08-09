@@ -19,6 +19,7 @@
 }
 .chrome-tabs.darwin {
   padding-left: 72px;
+  width: calc(100% - 84px);
 }
 .chrome-tabs * {
   box-sizing: inherit;
@@ -50,8 +51,8 @@
   position: absolute;
   top: 7px;
   bottom: 7px;
-  left: var(--tab-content-margin);
-  right: var(--tab-content-margin);
+  left: 9px;
+  right: 9px;
 }
 .chrome-tabs .chrome-tab .chrome-tab-dividers,
 .chrome-tabs .chrome-tab .chrome-tab-dividers::before,
@@ -119,8 +120,8 @@
   display: flex;
   top: 0;
   bottom: 0;
-  left: var(--tab-content-margin);
-  right: var(--tab-content-margin);
+  left: 9px;
+  right: 9px;
   padding: 9px 8px;
   overflow: hidden;
   pointer-events: all;

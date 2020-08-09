@@ -3,7 +3,11 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const store = require('./helpers/store');
 store.initStore();
 
-const { addNewWindowOptions, welcomeWindowOptions, shellWindowOptions } = require('./helpers/default-window-options');
+const {
+  addNewWindowOptions,
+  welcomeWindowOptions,
+  shellWindowOptions,
+} = require('./helpers/default-window-options');
 const createNewMenu = require('./helpers/create-menu');
 // Create records folder if not exists
 // const recordsFolderPath = app.getPath('userData') + '/session-records';
@@ -19,7 +23,12 @@ const createNewMenu = require('./helpers/create-menu');
 //   }
 // });
 
-let { menu, menuConnections } = createNewMenu(launchShell, launchAddNewWindow, changeTheme, changeTabTheme);
+let { menu, menuConnections } = createNewMenu(
+  launchShell,
+  launchAddNewWindow,
+  changeTheme,
+  changeTabTheme
+);
 
 /** @type {BrowserWindow} */
 let welcomeWindow = null;
@@ -30,21 +39,19 @@ let shellWindow = null;
 /** @type {BrowserWindow} */
 let addNewWindow = null;
 
-app.on('ready', function () {
+app.on('ready', () => {
   welcomeWindow = new BrowserWindow(welcomeWindowOptions(!app.isPackaged));
   welcomeWindow.connections = menuConnections;
 
   welcomeWindow.setMenu(menu);
   welcomeWindow.launchAddNewWindow = launchAddNewWindow;
   welcomeWindow.loadURL(`file://${__dirname}/windows/welcome/welcome.html`);
-  welcomeWindow.on('ready-to-show', function () {
+  welcomeWindow.on('ready-to-show', () => {
     welcomeWindow.store = store;
     welcomeWindow.show();
     welcomeWindow.focus();
   });
-  welcomeWindow.on('close', function () {
-    welcomeWindow = null;
-  });
+  welcomeWindow.on('close', () => (welcomeWindow = null));
 });
 
 function launchShell(conn) {
@@ -55,13 +62,11 @@ function launchShell(conn) {
 
     shellWindow.setMenu(menu);
     shellWindow.loadURL(`file://${__dirname}/windows/shell/shell.html`);
-    shellWindow.on('ready-to-show', function () {
+    shellWindow.on('ready-to-show', () => {
       shellWindow.show();
       shellWindow.focus();
     });
-    shellWindow.on('close', function () {
-      shellWindow = null;
-    });
+    shellWindow.on('close', () => (shellWindow = null));
   } else {
     shellWindow.webContents.send('new-tab', conn);
   }
@@ -76,13 +81,11 @@ function launchAddNewWindow() {
     addNewWindow.saveNewConnection = saveNewConnection;
     addNewWindow.saveNewConnectionAndOpen = saveNewConnectionAndOpen;
     addNewWindow.loadURL(`file://${__dirname}/windows/add-new/add-new.html`);
-    addNewWindow.on('ready-to-show', function () {
+    addNewWindow.on('ready-to-show', () => {
       addNewWindow.show();
       addNewWindow.focus();
     });
-    addNewWindow.on('close', function () {
-      addNewWindow = null;
-    });
+    addNewWindow.on('close', () => (addNewWindow = null));
   } else {
     addNewWindow.focus();
   }
@@ -94,7 +97,12 @@ ipcMain.on('open-connection', (event, connectionName) => {
 
 ipcMain.on('delete-connection', (event, connectionName) => {
   store.deleteConnection(connectionName);
-  const menus = createNewMenu(launchShell, launchAddNewWindow, changeTheme, changeTabTheme);
+  const menus = createNewMenu(
+    launchShell,
+    launchAddNewWindow,
+    changeTheme,
+    changeTabTheme
+  );
   menu = menus.menu;
   menuConnections = menus.menuConnections;
   if (welcomeWindow !== null) {
@@ -110,7 +118,12 @@ ipcMain.on('delete-connection', (event, connectionName) => {
 
 function saveNewConnection(conn) {
   store.addToConnections(conn);
-  const menus = createNewMenu(launchShell, launchAddNewWindow, changeTheme, changeTabTheme);
+  const menus = createNewMenu(
+    launchShell,
+    launchAddNewWindow,
+    changeTheme,
+    changeTabTheme
+  );
   menu = menus.menu;
   menuConnections = menus.menuConnections;
   if (welcomeWindow !== null) {
@@ -128,7 +141,12 @@ function saveNewConnection(conn) {
 
 function saveNewConnectionAndOpen(conn) {
   store.addToConnections(conn);
-  const menus = createNewMenu(launchShell, launchAddNewWindow, changeTheme, changeTabTheme);
+  const menus = createNewMenu(
+    launchShell,
+    launchAddNewWindow,
+    changeTheme,
+    changeTabTheme
+  );
   menu = menus.menu;
   menuConnections = menus.menuConnections;
   if (welcomeWindow !== null) {
@@ -145,7 +163,6 @@ function saveNewConnectionAndOpen(conn) {
   launchShell(conn);
   welcomeWindow.close();
 }
-
 
 function changeTheme(item) {
   store.setTheme(item.toolTip);

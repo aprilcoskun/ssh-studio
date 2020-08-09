@@ -167,7 +167,7 @@ window.addEventListener(
   false
 );
 
-ipcRenderer.on('change-theme', function (event, theme) {
+ipcRenderer.on('change-theme', (event, theme) => {
   Object.values(terms).forEach((term) => {
     term.term.setOption('theme', themes[theme]);
   });

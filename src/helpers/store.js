@@ -51,49 +51,49 @@ const store = new Store({
   },
 });
 
-module.exports.initStore = function initStore() {
+module.exports.initStore = () => {
   if (!store.get('settings')) {
-    store.set('settings', { theme: 'defaultLightTheme', tabTheme: 'Light'});
+    store.set('settings', { theme: 'defaultLightTheme', tabTheme: 'Light' });
   }
 
   if (!store.get('connections')) {
     store.set('connections', []);
   }
-}
+};
 
-module.exports.getConnections = function getConnections() {
+module.exports.getConnections = () => {
   return store.get('connections');
 };
 
-module.exports.getTheme = function getTheme() {
+module.exports.getTheme = () => {
   const settings = store.get('settings');
   return store.get('settings').theme;
 };
 
-module.exports.setTheme = function setTheme(theme) {
+module.exports.setTheme = (theme) => {
   const oldSettings = store.get('settings');
   const newSettings = { ...oldSettings, theme };
   store.set('settings', newSettings);
   return newSettings.theme;
 };
 
-module.exports.getTabTheme = function getTheme() {
+module.exports.getTabTheme = () => {
   return store.get('settings').tabTheme;
 };
 
-module.exports.setTabTheme = function setTheme(tabTheme) {
+module.exports.setTabTheme = (tabTheme) => {
   const oldSettings = store.get('settings');
   const newSettings = { ...oldSettings, tabTheme };
   store.set('settings', newSettings);
   return newSettings.tabTheme;
 };
 
-module.exports.getConnection = function getConnection(name) {
+module.exports.getConnection = (name) => {
   const connections = store.get('connections');
   return connections.find((c) => c.name === name);
 };
 
-module.exports.addToConnections = function addToConnections(connection) {
+module.exports.addToConnections = (connection) => {
   const connections = store.get('connections');
   const sameNamed = connections.find((c) => c.name === connection.name);
   if (sameNamed) {
@@ -105,14 +105,14 @@ module.exports.addToConnections = function addToConnections(connection) {
   return connections;
 };
 
-module.exports.deleteConnection = function deleteConnection(name) {
+module.exports.deleteConnection = (name) => {
   const oldConnections = store.get('connections');
   const newConnections = oldConnections.filter((c) => c.name !== name);
   store.set('connections', newConnections);
   return newConnections;
 };
 
-module.exports.editConnection = function editConnection(connection) {
+module.exports.editConnection = (connection) => {
   const connections = store.get('connections');
   for (let index = 0; index < connections.length; index++) {
     if (connection.name === connections[index].name) {
