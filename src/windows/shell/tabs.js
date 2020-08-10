@@ -224,9 +224,6 @@
 
     updateTab(tabEl, tabProperties) {
       tabEl.querySelector('.chrome-tab-title').textContent = tabProperties.title
-      if (tabProperties.id) {
-        tabEl.setAttribute('data-tab-id', tabProperties.id)
-      }
     }
 
     cleanUpPreviouslyDraggedTabs() {

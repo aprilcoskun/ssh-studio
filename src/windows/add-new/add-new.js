@@ -6,7 +6,7 @@ const portInput = document.getElementById('aligned-port');
 const typeInput = document.getElementById('aligned-type');
 const passwordInput = document.getElementById('aligned-password');
 
-function save() {
+function save(open) {
   const conn = {
     name: nameInput.value,
     host: hostInput.value,
@@ -23,27 +23,5 @@ function save() {
   if (!conn.port || isNaN(conn.port) || conn.port > 65535 || conn.port < 2) {
     return alert('Please enter a valid Port Number');
   }
-
-  require('electron').remote.getCurrentWindow().saveNewConnection(conn);
-}
-
-function saveAndOpen() {
-  const conn = {
-    name: nameInput.value,
-    host: hostInput.value,
-    port: Number(portInput.value),
-    username: userInput.value,
-    password: passwordInput.value,
-    type: typeInput.options[typeInput.selectedIndex].value,
-  };
-
-  if (!hostRegex.test(conn.host)) {
-    return alert('Please enter a valid Hostname or an Ip Address');
-  }
-
-  if (!conn.port || isNaN(conn.port) || conn.port > 65535 || conn.port < 2) {
-    return alert('Please enter a valid Port Number');
-  }
-
-  require('electron').remote.getCurrentWindow().saveNewConnectionAndOpen(conn);
+  require('electron').ipcRenderer.send('save-new-connection', { conn, open });
 }

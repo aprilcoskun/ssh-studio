@@ -39,19 +39,19 @@ let shellWindow = null;
 /** @type {BrowserWindow} */
 let addNewWindow = null;
 
-app.on('ready', () => {
+app.once('ready', () => {
   welcomeWindow = new BrowserWindow(welcomeWindowOptions(!app.isPackaged));
   welcomeWindow.connections = menuConnections;
 
   welcomeWindow.setMenu(menu);
   welcomeWindow.launchAddNewWindow = launchAddNewWindow;
   welcomeWindow.loadURL(`file://${__dirname}/windows/welcome/welcome.html`);
-  welcomeWindow.on('ready-to-show', () => {
+  welcomeWindow.once('ready-to-show', () => {
     welcomeWindow.store = store;
     welcomeWindow.show();
     welcomeWindow.focus();
   });
-  welcomeWindow.on('close', () => (welcomeWindow = null));
+  welcomeWindow.once('close', () => (welcomeWindow = null));
 });
 
 function launchShell(conn) {
@@ -62,11 +62,11 @@ function launchShell(conn) {
 
     shellWindow.setMenu(menu);
     shellWindow.loadURL(`file://${__dirname}/windows/shell/shell.html`);
-    shellWindow.on('ready-to-show', () => {
+    shellWindow.once('ready-to-show', () => {
       shellWindow.show();
       shellWindow.focus();
     });
-    shellWindow.on('close', () => (shellWindow = null));
+    shellWindow.once('close', () => (shellWindow = null));
   } else {
     shellWindow.webContents.send('new-tab', conn);
   }
@@ -78,18 +78,20 @@ function launchShell(conn) {
 function launchAddNewWindow() {
   if (addNewWindow === null) {
     addNewWindow = new BrowserWindow(addNewWindowOptions(!app.isPackaged));
-    addNewWindow.saveNewConnection = saveNewConnection;
-    addNewWindow.saveNewConnectionAndOpen = saveNewConnectionAndOpen;
     addNewWindow.loadURL(`file://${__dirname}/windows/add-new/add-new.html`);
-    addNewWindow.on('ready-to-show', () => {
+    addNewWindow.once('ready-to-show', () => {
       addNewWindow.show();
       addNewWindow.focus();
     });
-    addNewWindow.on('close', () => (addNewWindow = null));
+    addNewWindow.once('close', () => (addNewWindow = null));
   } else {
     addNewWindow.focus();
   }
 }
+
+ipcMain.on('save-new-connection', (event, data) => {
+  saveNewConnection(data.conn, data.open);
+})
 
 ipcMain.on('open-connection', (event, connectionName) => {
   launchShell(store.getConnection(connectionName));
@@ -116,7 +118,7 @@ ipcMain.on('delete-connection', (event, connectionName) => {
   }
 });
 
-function saveNewConnection(conn) {
+function saveNewConnection(conn, open) {
   store.addToConnections(conn);
   const menus = createNewMenu(
     launchShell,
@@ -137,31 +139,12 @@ function saveNewConnection(conn) {
   }
 
   addNewWindow.close();
-}
-
-function saveNewConnectionAndOpen(conn) {
-  store.addToConnections(conn);
-  const menus = createNewMenu(
-    launchShell,
-    launchAddNewWindow,
-    changeTheme,
-    changeTabTheme
-  );
-  menu = menus.menu;
-  menuConnections = menus.menuConnections;
-  if (welcomeWindow !== null) {
-    menus.menuConnections.forEach((m) => delete m.click);
-    welcomeWindow.setMenu(menu);
-    welcomeWindow.webContents.send('reload-connection', menus.menuConnections);
+  if (open) {
+    launchShell(conn);
+    if (welcomeWindow !== null) {
+      welcomeWindow.close();
+    }
   }
-
-  if (shellWindow !== null) {
-    shellWindow.setMenu(menu);
-  }
-
-  addNewWindow.close();
-  launchShell(conn);
-  welcomeWindow.close();
 }
 
 function changeTheme(item) {
