@@ -9,7 +9,8 @@
 })(window, (window, Draggabilly) => {
   const TAB_CONTENT_MARGIN = 9
   const TAB_CONTENT_OVERLAP_DISTANCE = 1
-
+  const TAB_CONTENT_MIN_WIDTH = 24
+  const TAB_CONTENT_MAX_WIDTH = 200
   const TAB_SIZE_SMALL = 84
   const TAB_SIZE_SMALLER = 60
   const TAB_SIZE_MINI = 48
@@ -86,24 +87,39 @@
       return this.el.querySelector('.chrome-tabs-content')
     }
 
-    get tabContentWidth() {
+    get tabContentWidths() {
       const numberOfTabs = this.tabEls.length
       const tabsContentWidth = this.tabContentEl.clientWidth
       const tabsCumulativeOverlappedWidth = (numberOfTabs - 1) * TAB_CONTENT_OVERLAP_DISTANCE
       const targetWidth = (tabsContentWidth - (2 * TAB_CONTENT_MARGIN) + tabsCumulativeOverlappedWidth) / numberOfTabs
-      return targetWidth;
-    }
+      const clampedTargetWidth = Math.max(TAB_CONTENT_MIN_WIDTH, Math.min(TAB_CONTENT_MAX_WIDTH, targetWidth))
+      const flooredClampedTargetWidth = Math.floor(clampedTargetWidth)
+      const totalTabsWidthUsingTarget = (flooredClampedTargetWidth * numberOfTabs) + (2 * TAB_CONTENT_MARGIN) - tabsCumulativeOverlappedWidth
+      const totalExtraWidthDueToFlooring = tabsContentWidth - totalTabsWidthUsingTarget
+
+      // TODO - Support tabs with different widths / e.g. "pinned" tabs
+      const widths = []
+      let extraWidthRemaining = totalExtraWidthDueToFlooring
+      for (let i = 0; i < numberOfTabs; i += 1) {
+        const extraWidth = flooredClampedTargetWidth < TAB_CONTENT_MAX_WIDTH && extraWidthRemaining > 0 ? 1 : 0
+        widths.push(flooredClampedTargetWidth + extraWidth)
+        if (extraWidthRemaining > 0) extraWidthRemaining -= 1
+      }
+
+      return widths
+      }
 
     get tabContentPositions() {
       const positions = []
-      const tabContentWidth = this.tabContentWidth
-      const tabsLength = this.tabEls.length
+      const tabContentWidths = this.tabContentWidths
+      const tabContentWidthsLength = tabContentWidths.length
       let position = TAB_CONTENT_MARGIN
 
-      for (let i = 0; i < tabsLength; i++) {
+      for (let i = 0; i < tabContentWidthsLength; i++) {
+        const width = tabContentWidths[i];
         const offset = i * TAB_CONTENT_OVERLAP_DISTANCE
         positions.push(position - offset)
-        position += tabContentWidth
+        position += width
       }
 
       return positions
@@ -120,20 +136,21 @@
     }
 
     layoutTabs() {
-      const tabContentWidth = this.tabContentWidth
+      const tabContentWidths = this.tabContentWidths
       const tabElsLength = this.tabEls.length
       for (let i = 0; i < tabElsLength; i++) {
         const tabEl = this.tabEls[i];
-        const width = tabContentWidth + (2 * TAB_CONTENT_MARGIN)
+        const contentWidth = tabContentWidths[i]
+        const width = contentWidth + (2 * TAB_CONTENT_MARGIN)
 
         tabEl.style.width = `${width}px`
         tabEl.removeAttribute('is-small')
         tabEl.removeAttribute('is-smaller')
         tabEl.removeAttribute('is-mini')
 
-        if (tabContentWidth < TAB_SIZE_SMALL) tabEl.setAttribute('is-small', '')
-        if (tabContentWidth < TAB_SIZE_SMALLER) tabEl.setAttribute('is-smaller', '')
-        if (tabContentWidth < TAB_SIZE_MINI) tabEl.setAttribute('is-mini', '')
+        if (contentWidth < TAB_SIZE_SMALL) tabEl.setAttribute('is-small', '')
+        if (contentWidth < TAB_SIZE_SMALLER) tabEl.setAttribute('is-smaller', '')
+        if (contentWidth < TAB_SIZE_MINI) tabEl.setAttribute('is-mini', '')
       }
 
       let styleHTML = ''
