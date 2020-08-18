@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./welcome.css">
+    <script src="./welcome.js"></script>
   </head>
   <body>
     <div id="Greeting">
@@ -13,12 +14,11 @@
           <h2>SSH Studio</h2>
           <div>Version 1.7.3</div>
         </div>
-        <button id="newButton" onclick="javascript:win.launchAddNewWindow()">
+        <button id="newButton" onclick="javascript:ipcRenderer.send('launch-add-new-window')">
           Add New Connection
         </button>
       </div>
       <div id="connBox"></div>
     </div>
-    <script src="./welcome.js"></script>
   </body>
 </html>
