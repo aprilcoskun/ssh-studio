@@ -1,30 +1,183 @@
-const ChromeTabs = require('./tabs');
+const { Client } = require('ssh2');
+const { Terminal } = require('xterm');
+const { FitAddon } = require('xterm-addon-fit');
+const { WebglAddon } = require('xterm-addon-webgl');
+const { WebLinksAddon } = require('xterm-addon-web-links');
+const { shell: electronShell, ipcRenderer } = require('electron');
+const fontFaceObserver = require('fontfaceobserver');
+const MenloFont = new fontFaceObserver('Menlo');
+const { Instance } = require('chalk');
 const chromeTabsEl = document.querySelector('.chrome-tabs');
 const chromeTabs = new ChromeTabs(chromeTabsEl);
-
-document.querySelectorAll('.tab-content').forEach((el) => {
-  el.style.display = el.id === 'tab-content-home' ? 'block' : 'none';
+const chalk = new Instance({ level: 2 });
+const terms = {};
+let currentTheme = 'defaultLightTheme';
+ipcRenderer.invoke('get-theme').then((theme) => {
+  currentTheme = theme;
+  chromeTabsEl.classList.add(theme); // TODO: change
 });
 
-if (win.store.getTabTheme() === 'Dark') {
-  if (!chromeTabsEl.classList.contains('chrome-tabs-dark-theme')) {
-    document.documentElement.classList.add('dark-theme');
-    chromeTabsEl.classList.add('chrome-tabs-dark-theme');
+async function createTerminal(connection, containerElement) {
+  const theme = themes[await ipcRenderer.invoke('get-theme')];
+  let useMenlo = true;
+  try {
+    await MenloFont.load();
+  } catch (error) {
+    useMenlo = false;
+  }
+
+  const term = new Terminal({
+    cursorBlink: true,
+    allowTransparency: false,
+    scrollback: 100000,
+    tabStopWidth: 4,
+    bellStyle: 'none',
+    cursorStyle: 'bar',
+    fontSize: 12,
+    fontFamily: useMenlo ? 'Menlo' : 'Courier New, Lucida Console, monospace',
+    letterSpacing: 1,
+    theme,
+  });
+  document.getElementById('containers').style.backgroundColor =
+    theme.background;
+  const fitAddon = new FitAddon();
+  term.loadAddon(fitAddon);
+  term.loadAddon(
+    new WebLinksAddon((event, uri) => {
+      event.preventDefault();
+      electronShell.openExternal(uri);
+    })
+  );
+  term.open(containerElement);
+  term.loadAddon(new WebglAddon());
+  fitAddon.fit();
+
+  if (connection.type === 'SSH') {
+    const conn = new Client();
+    conn.on('ready', () => {
+      conn.shell(
+        { term: 'xterm-256color', cols: term.cols, rows: term.rows },
+        (err, stream) => {
+          if (err) {
+            onError(err);
+            conn.end();
+          }
+
+          stream.on('close', (code, signal) => {
+            if (code || signal) {
+              onError(
+                term,
+                (code ? `Code ${code} ` : '') +
+                  (signal ? `Signal ${signal}` : '')
+              );
+            }
+            conn.end();
+          });
+          stream.on('data', (data) => term.write(data));
+
+          term.setOption('disableStdin', false);
+          term.onData((data) => stream.write(data));
+          term.focus();
+          term.scrollToBottom();
+          term.onResize(({ cols, rows }) => stream.setWindow(rows, cols));
+        }
+      );
+    });
+
+    conn.on(
+      'keyboard-interactive',
+      (name, instructions, instructionsLang, prompts, finish) => {
+        finish([connection.password]);
+      }
+    );
+
+    conn.on('banner', (data) => term.write(data.replace(/\r?\n/g, '\r\n')));
+    conn.on('end', (err) => {
+      if (err) {
+        return onError(term, err);
+      }
+      return onError(term, 'Connection end by you.');
+    });
+
+    conn.on('close', (err) => {
+      if (err) {
+        return onError(term, err);
+      }
+      return onError(term, 'Connection Closed.');
+    });
+
+    conn.on('error', (err) => {
+      if (err) {
+        return onError(term, err);
+      }
+      return onError(term, 'Unknown Connection Error');
+    });
+
+    conn.connect({
+      host: connection.host,
+      username: connection.username,
+      password: connection.password,
+      port: connection.port,
+      tryKeyboard: true,
+    });
+  } else {
+    const conn = require('net').connect(connection.port, connection.host);
+    conn.on('connect', () => {
+      conn.write(`${connection.username}\r`);
+      conn.write(`${connection.password}\r`);
+      term.onData((data) => conn.write(data));
+      term.focus();
+      term.scrollToBottom();
+    });
+
+    conn.on('data', (data) => term.write(data));
+    conn.on('end', (err) => {
+      if (err) {
+        return onError(term, err);
+      }
+      return onError(term, 'Connection end by you.');
+    });
+
+    conn.on('close', (err) => {
+      if (err) {
+        return onError(term, err);
+      }
+      return onError(term, 'Connection Closed.');
+    });
+
+    conn.on('error', (err) => {
+      if (err) {
+        return onError(term, err);
+      }
+      return onError(term, 'Unknown Connection Error');
+    });
+  }
+  terms[connection.name] = { term, fitAddon };
+}
+
+function onError(term, err) {
+  term.setOption('disableStdin', true);
+  if (err) {
+    term.writeln(chalk.red(`Error: ${err.message}`));
+    if (err.message) {
+      term.writeln(chalk.red(`Error: ${err.message}`));
+    } else {
+      term.writeln(chalk.red(`Error: ${err}`));
+    }
+  } else {
+    term.writeln(chalk.red('Connection Terminated for Unknown Reason'));
   }
 }
 
-ipcRenderer.on('change-tab-theme', (event, theme) => {
-  if (theme === 'Light') {
-    if (chromeTabsEl.classList.contains('chrome-tabs-dark-theme')) {
-      document.documentElement.classList.remove('dark-theme');
-      chromeTabsEl.classList.remove('chrome-tabs-dark-theme');
-    }
-  } else if (theme === 'Dark') {
-    if (!chromeTabsEl.classList.contains('chrome-tabs-dark-theme')) {
-      document.documentElement.classList.add('dark-theme');
-      chromeTabsEl.classList.add('chrome-tabs-dark-theme');
-    }
-  }
+ipcRenderer.on('change-theme', (event, theme) => {
+  chromeTabsEl.classList.remove(currentTheme);
+  chromeTabsEl.classList.add(theme);
+  document.getElementById('containers').style.backgroundColor =
+  themes[theme].background;
+  Object.values(terms).forEach((term) => {
+    term.term.setOption('theme', themes[theme]);
+  });
+  currentTheme = theme;
 });
 
 ipcRenderer.on('new-tab', (event, conn) => {
@@ -39,36 +192,11 @@ ipcRenderer.on('new-tab', (event, conn) => {
   }
   if (elemFound === false) {
     chromeTabs.addTab({ title: conn.name, favicon: false });
+    const tabContainer = document.createElement('div');
+    tabContainer.id = 'tab-content-' + conn.name;
+    tabContainer.classList.add('tab-content');
+    tabContainer.style.display = 'block';
+    document.getElementById('containers').appendChild(tabContainer);
+    createTerminal(conn, tabContainer);
   }
 });
-
-chromeTabsEl.addEventListener('activeTabChange', ({ detail }) => {
-  const tabContentId = 'tab-content-' + detail.tabEl.id;
-  document.querySelectorAll('.tab-content').forEach((el) => {
-    el.style.display = el.id === tabContentId ? 'block' : 'none';
-  });
-});
-
-chromeTabsEl.addEventListener('tabAdd', ({ detail }) => {
-  const tabContainer = document.createElement('div');
-  tabContainer.id = 'tab-content-' + detail.tabEl.id;
-  tabContainer.classList.add('tab-content');
-  tabContainer.style.display = 'block';
-  document.getElementById('containers').appendChild(tabContainer);
-  createTerminal(win.store.getConnection(detail.tabEl.id), tabContainer);
-});
-
-chromeTabsEl.addEventListener('tabRemove', ({ detail }) => {
-  const tabContainerId = 'tab-content-' + detail.tabEl.id;
-  document
-    .getElementById('containers')
-    .removeChild(document.getElementById(tabContainerId));
-  delete terms[detail.tabEl.id];
-  // if (chromeTabs.tabEls.length === 0) {
-  //   win.close();
-  // }
-});
-
-if (win.initConn) {
-  chromeTabs.addTab({ title: win.initConn.name, favicon: false });
-}

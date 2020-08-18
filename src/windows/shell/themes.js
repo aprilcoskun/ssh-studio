@@ -1,4 +1,4 @@
-module.exports.defaultLightTheme = {
+const defaultLightTheme = {
   background: '#FFF',
   foreground: '#000',
   black: '#000',
@@ -22,7 +22,9 @@ module.exports.defaultLightTheme = {
   selection: '#666666',
 };
 
-module.exports.solorizedLightTheme = {
+const solorizedLightTheme = {
+  tabBackground: '#e6dfcb',
+  header: '#657B83',
   background: '#fdf6e3',
   foreground: '#839496',
   black: '#000000',
@@ -46,7 +48,7 @@ module.exports.solorizedLightTheme = {
   selection: '#586E75',
 };
 
-module.exports.materialTheme = {
+const materialTheme = {
   background: '#333333',
   foreground: '#ECEFF1',
   black: '#000',
@@ -69,7 +71,7 @@ module.exports.materialTheme = {
   selection: '#80CBC4',
 };
 
-module.exports.defaultBlackTheme = {
+const defaultBlackTheme = {
   foreground: '#FFF',
   background: '#000',
   black: '#000',
@@ -91,3 +93,10 @@ module.exports.defaultBlackTheme = {
   cursor: '#89DDFF',
   selection: '#89DDFF',
 };
+
+const themes = {
+  materialTheme,
+  defaultLightTheme,
+  defaultBlackTheme,
+  solorizedLightTheme,
+}

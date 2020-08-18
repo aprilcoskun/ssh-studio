@@ -1,33 +1,18 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-// const { mkdir, exists } = require('fs');
 const store = require('./helpers/store');
 store.initStore();
-
 const {
   addNewWindowOptions,
   welcomeWindowOptions,
   shellWindowOptions,
-} = require('./helpers/default-window-options');
+} = require('./helpers/window-options');
 const createNewMenu = require('./helpers/create-menu');
-// Create records folder if not exists
-// const recordsFolderPath = app.getPath('userData') + '/session-records';
-// exists(recordsFolderPath, function (exists) {
-//   if (!exists) {
-//     console.log('Creating records folder...');
-//     mkdir(recordsFolderPath, function (error) {
-//       if (error) {
-//         console.error(error);
-//         throw error;
-//       }
-//     });
-//   }
-// });
+const ensureRecordFolder = require('./helpers/ensure-record-folder');
 
 let { menu, menuConnections } = createNewMenu(
   launchShell,
   launchAddNewWindow,
-  changeTheme,
-  changeTabTheme
+  changeTheme
 );
 
 /** @type {BrowserWindow} */
@@ -41,32 +26,41 @@ let addNewWindow = null;
 
 app.once('ready', () => {
   welcomeWindow = new BrowserWindow(welcomeWindowOptions(!app.isPackaged));
-  welcomeWindow.connections = menuConnections;
-
   welcomeWindow.setMenu(menu);
-  welcomeWindow.launchAddNewWindow = launchAddNewWindow;
   welcomeWindow.loadURL(`file://${__dirname}/windows/welcome/welcome.html`);
   welcomeWindow.once('ready-to-show', () => {
-    welcomeWindow.store = store;
     welcomeWindow.show();
     welcomeWindow.focus();
   });
+
+  welcomeWindow.webContents.once('did-finish-load', () => {
+    welcomeWindow.webContents.send(
+      'reload-connection',
+      menuConnections.map((c) => c.label)
+    );
+  });
+
   welcomeWindow.once('close', () => (welcomeWindow = null));
+
+  ensureRecordFolder();
 });
 
 function launchShell(conn) {
   if (shellWindow === null) {
     shellWindow = new BrowserWindow(shellWindowOptions(!app.isPackaged));
-    shellWindow.initConn = conn;
     shellWindow.store = store;
 
     shellWindow.setMenu(menu);
-    shellWindow.loadURL(`file://${__dirname}/windows/shell/shell.html`);
+    shellWindow.webContents.once('did-finish-load', () => {
+      shellWindow.webContents.send('new-tab', conn);
+    });
     shellWindow.once('ready-to-show', () => {
       shellWindow.show();
       shellWindow.focus();
     });
+
     shellWindow.once('close', () => (shellWindow = null));
+    shellWindow.loadURL(`file://${__dirname}/windows/shell/shell.html`);
   } else {
     shellWindow.webContents.send('new-tab', conn);
   }
@@ -89,49 +83,19 @@ function launchAddNewWindow() {
   }
 }
 
+ipcMain.on('launch-add-new-window', (event, data) => launchAddNewWindow());
+
 ipcMain.on('save-new-connection', (event, data) => {
-  saveNewConnection(data.conn, data.open);
-})
-
-ipcMain.on('open-connection', (event, connectionName) => {
-  launchShell(store.getConnection(connectionName));
-});
-
-ipcMain.on('delete-connection', (event, connectionName) => {
-  store.deleteConnection(connectionName);
-  const menus = createNewMenu(
-    launchShell,
-    launchAddNewWindow,
-    changeTheme,
-    changeTabTheme
-  );
+  store.addToConnections(data.conn);
+  const menus = createNewMenu(launchShell, launchAddNewWindow, changeTheme);
   menu = menus.menu;
   menuConnections = menus.menuConnections;
   if (welcomeWindow !== null) {
-    menus.menuConnections.forEach((m) => delete m.click);
     welcomeWindow.setMenu(menu);
-    welcomeWindow.webContents.send('reload-connection', menus.menuConnections);
-  }
-
-  if (shellWindow !== null) {
-    shellWindow.setMenu(menu);
-  }
-});
-
-function saveNewConnection(conn, open) {
-  store.addToConnections(conn);
-  const menus = createNewMenu(
-    launchShell,
-    launchAddNewWindow,
-    changeTheme,
-    changeTabTheme
-  );
-  menu = menus.menu;
-  menuConnections = menus.menuConnections;
-  if (welcomeWindow !== null) {
-    menus.menuConnections.forEach((m) => delete m.click);
-    welcomeWindow.setMenu(menu);
-    welcomeWindow.webContents.send('reload-connection', menus.menuConnections);
+    welcomeWindow.webContents.send(
+      'reload-connection',
+      menus.menuConnections.map((c) => c.label)
+    );
   }
 
   if (shellWindow !== null) {
@@ -139,24 +103,41 @@ function saveNewConnection(conn, open) {
   }
 
   addNewWindow.close();
-  if (open) {
-    launchShell(conn);
+  if (data.open) {
+    launchShell(data.conn);
     if (welcomeWindow !== null) {
       welcomeWindow.close();
     }
   }
-}
+});
+
+ipcMain.on('open-connection', (event, connectionName) => {
+  launchShell(store.getConnection(connectionName));
+});
+
+ipcMain.on('delete-connection', (event, connectionName) => {
+  store.deleteConnection(connectionName);
+  const menus = createNewMenu(launchShell, launchAddNewWindow, changeTheme);
+  menu = menus.menu;
+  menuConnections = menus.menuConnections;
+  if (welcomeWindow !== null) {
+    welcomeWindow.setMenu(menu);
+    welcomeWindow.webContents.send(
+      'reload-connection',
+      menus.menuConnections.map((c) => c.label)
+    );
+  }
+
+  if (shellWindow !== null) {
+    shellWindow.setMenu(menu);
+  }
+});
+
+ipcMain.handle('get-theme', () => store.getTheme());
 
 function changeTheme(item) {
   store.setTheme(item.toolTip);
   if (shellWindow !== null) {
     shellWindow.webContents.send('change-theme', item.toolTip);
-  }
-}
-
-function changeTabTheme(item) {
-  store.setTabTheme(item.label);
-  if (shellWindow !== null) {
-    shellWindow.webContents.send('change-tab-theme', item.label);
   }
 }

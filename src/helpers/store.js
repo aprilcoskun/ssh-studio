@@ -45,7 +45,6 @@ const store = new Store({
       type: 'object',
       properties: {
         theme: { type: 'string', default: 'defaultLightTheme' },
-        tabTheme: { type: 'string', default: 'Light' },
       },
     },
   },
@@ -53,7 +52,7 @@ const store = new Store({
 
 module.exports.initStore = () => {
   if (!store.get('settings')) {
-    store.set('settings', { theme: 'defaultLightTheme', tabTheme: 'Light' });
+    store.set('settings', { theme: 'defaultLightTheme' });
   }
 
   if (!store.get('connections')) {
@@ -75,17 +74,6 @@ module.exports.setTheme = (theme) => {
   const newSettings = { ...oldSettings, theme };
   store.set('settings', newSettings);
   return newSettings.theme;
-};
-
-module.exports.getTabTheme = () => {
-  return store.get('settings').tabTheme;
-};
-
-module.exports.setTabTheme = (tabTheme) => {
-  const oldSettings = store.get('settings');
-  const newSettings = { ...oldSettings, tabTheme };
-  store.set('settings', newSettings);
-  return newSettings.tabTheme;
 };
 
 module.exports.getConnection = (name) => {

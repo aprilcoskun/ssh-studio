@@ -15,15 +15,9 @@ contextMenu({
   ],
 });
 
-module.exports = (
-  launchShell,
-  launchAddNewWindow,
-  changeTheme,
-  changeTabTheme
-) => {
+module.exports = (launchShell, launchAddNewWindow, changeTheme) => {
   const menuConnections = [];
   const terminalTheme = store.getTheme();
-  const tabTheme = store.getTabTheme();
   store.getConnections().forEach((conn) => {
     menuConnections.push({
       label: conn.name,
@@ -79,54 +73,32 @@ module.exports = (
           label: 'Themes',
           submenu: [
             {
-              label: 'Tab Themes',
-              submenu: [
-                {
-                  type: 'radio',
-                  label: 'Light',
-                  checked: tabTheme === 'Light',
-                  click: changeTabTheme,
-                },
-                {
-                  type: 'radio',
-                  label: 'Dark',
-                  checked: tabTheme === 'Dark',
-                  click: changeTabTheme,
-                },
-              ],
+              type: 'radio',
+              label: 'Light',
+              toolTip: 'defaultLightTheme',
+              checked: terminalTheme === 'defaultLightTheme',
+              click: changeTheme,
             },
             {
-              label: 'Terminal Themes',
-              submenu: [
-                {
-                  type: 'radio',
-                  label: 'Light',
-                  toolTip: 'defaultLightTheme',
-                  checked: terminalTheme === 'defaultLightTheme',
-                  click: changeTheme,
-                },
-                {
-                  type: 'radio',
-                  label: 'Dark',
-                  toolTip: 'defaultBlackTheme',
-                  checked: terminalTheme === 'defaultBlackTheme',
-                  click: changeTheme,
-                },
-                {
-                  type: 'radio',
-                  label: 'Material',
-                  toolTip: 'materialTheme',
-                  checked: terminalTheme === 'materialTheme',
-                  click: changeTheme,
-                },
-                {
-                  type: 'radio',
-                  label: 'Solorized',
-                  toolTip: 'solorizedLightTheme',
-                  checked: terminalTheme === 'solorizedLightTheme',
-                  click: changeTheme,
-                },
-              ],
+              type: 'radio',
+              label: 'Dark',
+              toolTip: 'defaultBlackTheme',
+              checked: terminalTheme === 'defaultBlackTheme',
+              click: changeTheme,
+            },
+            {
+              type: 'radio',
+              label: 'Material',
+              toolTip: 'materialTheme',
+              checked: terminalTheme === 'materialTheme',
+              click: changeTheme,
+            },
+            {
+              type: 'radio',
+              label: 'Solorized',
+              toolTip: 'solorizedLightTheme',
+              checked: terminalTheme === 'solorizedLightTheme',
+              click: changeTheme,
             },
           ],
         },

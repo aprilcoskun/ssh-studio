@@ -25,6 +25,9 @@
   box-sizing: inherit;
   font: inherit;
 }
+.tab-content {
+  display: none;
+}
 .chrome-tabs .chrome-tabs-content {
   position: relative;
   width: 100%;
@@ -66,7 +69,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 1px;
+  width: .75px;
   background: #a9adb0;
   opacity: 1;
   transition: opacity 0.2s ease;
@@ -219,35 +222,92 @@
   transition: transform 120ms ease-in-out;
 }
 
-.chrome-tabs.chrome-tabs-dark-theme .chrome-tab[active] .chrome-tab-content {
-  background-color: #495057;
+/* Dark THEME */
+.chrome-tabs.defaultBlackTheme .chrome-tab[active] .chrome-tab-content {
+  background-color: #686868;
 }
 
-.chrome-tabs.chrome-tabs-dark-theme {
-  background: #1c243e;
+.chrome-tabs.defaultBlackTheme {
+  background: #000;
 }
-.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-dividers::before,
-.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-dividers::after {
-  background: #4a4d51;
+.chrome-tabs.defaultBlackTheme .chrome-tab .chrome-tab-dividers::before,
+.chrome-tabs.defaultBlackTheme .chrome-tab .chrome-tab-dividers::after {
+  background: #FFF;
 }
-.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-title {
-  color: #9ca1a7;
+.chrome-tabs.defaultBlackTheme .chrome-tab .chrome-tab-title {
+  color: #FFF;
 }
-.chrome-tabs.chrome-tabs-dark-theme .chrome-tab[active] .chrome-tab-title {
-  color: #f1f3f4;
+.chrome-tabs.defaultBlackTheme .chrome-tab[active] .chrome-tab-title {
+  color: rgba(255, 255, 255, .05);
 }
-.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-close {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(154, 160, 166, .8)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+.chrome-tabs.defaultBlackTheme .chrome-tab .chrome-tab-close {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgb(255,255,255)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
 }
-.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-close:hover {
-  background-color: #5f6368;
+.chrome-tabs.defaultBlackTheme .chrome-tab .chrome-tab-close:hover {
+  background-color: #686868;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .7)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
 }
-.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-close:hover:active {
-  background-color: #80868b;
+.chrome-tabs.defaultBlackTheme .chrome-tab .chrome-tab-close:hover:active {
+  background-color: #000;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .9)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
 }
 
-.tab-content {
-  display: none;
+/* Material THEME */
+.chrome-tabs.materialTheme .chrome-tab[active] .chrome-tab-content {
+  background-color: #333333;
+}
+
+.chrome-tabs.materialTheme {
+  background: #333333;
+}
+.chrome-tabs.materialTheme .chrome-tab .chrome-tab-dividers::before,
+.chrome-tabs.materialTheme .chrome-tab .chrome-tab-dividers::after {
+  background: #ECEFF1;
+}
+.chrome-tabs.materialTheme .chrome-tab .chrome-tab-title {
+  color: #ECEFF1;
+}
+.chrome-tabs.materialTheme .chrome-tab[active] .chrome-tab-title {
+  color: #ECEFF1;
+}
+.chrome-tabs.materialTheme .chrome-tab .chrome-tab-close {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgb(236,239,241)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+}
+.chrome-tabs.materialTheme .chrome-tab .chrome-tab-close:hover {
+  background-color: #6B6B6B;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .7)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+}
+.chrome-tabs.materialTheme .chrome-tab .chrome-tab-close:hover:active {
+  background-color: #D0D0D0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .9)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+}
+
+/* SOLORIZED THEME */
+.chrome-tabs.solorizedLightTheme .chrome-tab[active] .chrome-tab-content {
+  background-color: #fdf6e3;
+}
+
+.chrome-tabs.solorizedLightTheme {
+  background: #e6dfcb;
+}
+.chrome-tabs.solorizedLightTheme .chrome-tab .chrome-tab-dividers::before,
+.chrome-tabs.solorizedLightTheme .chrome-tab .chrome-tab-dividers::after {
+  background: #657b83;
+}
+.chrome-tabs.solorizedLightTheme .chrome-tab .chrome-tab-title {
+  color: #657b83;
+}
+.chrome-tabs.solorizedLightTheme .chrome-tab[active] .chrome-tab-title {
+  color: #657b83;
+}
+.chrome-tabs.solorizedLightTheme .chrome-tab .chrome-tab-close {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgb(101,123,131)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+}
+.chrome-tabs.solorizedLightTheme .chrome-tab .chrome-tab-close:hover {
+  background-color: #586E75;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .7)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+}
+.chrome-tabs.solorizedLightTheme .chrome-tab .chrome-tab-close:hover:active {
+  background-color: #839496;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .9)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
 }
