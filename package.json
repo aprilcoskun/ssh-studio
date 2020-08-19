@@ -1,6 +1,6 @@
 {
   "name": "ssh-studio",
-  "version": "1.7.3",
+  "version": "1.8.0",
   "description": "SSH & Telnet Client",
   "homepage": "https://github.com/aprilcoskun/ssh-studio",
   "author": {
@@ -19,7 +19,7 @@
     "electron:build:linux": "electron-builder build --linux"
   },
   "devDependencies": {
-    "electron": "^9.2.0",
+    "electron": "^9.2.1",
     "electron-builder": "^22.8.0"
   },
   "dependencies": {
