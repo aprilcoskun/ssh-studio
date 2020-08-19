@@ -1,12 +1,9 @@
-@font-face {
-  font-family: 'Menlo22';
-  src: url('../shell/Menlo-Regular.ttf');
-}
 body {
   margin: 0;
   width: 100vw;
   height: 100vh;
-  font-family: Menlo22 !important;
+  font-family: BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif !important;
 }
 #Greeting {
   display: flex;
@@ -54,7 +51,7 @@ body {
   width: 40%;
 }
 .connection {
-  width: calc(100% - 2rem);
+  width: calc(100% - 1.5rem);
   color: white;
   text-align: inherit;
 }
@@ -74,6 +71,7 @@ body {
   display: flex;
   flex-direction: row;
   padding: 0.5rem 1rem;
+  margin-right: 1px;
   color: white;
   text-decoration: none;
   background-color: #1c243e;
@@ -130,53 +128,34 @@ body {
   max-height: 100%;
   cursor: pointer;
   text-overflow: ellipsis;
-  overflow:hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.connection .space {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 16px;
+  position: relative;
+  width: 16px;
+  height: 16px;
 }
 .connection .close {
   display: flex;
   flex-direction: column;
-  flex-basis: 16px;
+  flex-basis: 24px;
   position: relative;
-  margin-right: -12px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  border-radius: 20%;
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: 8px 8px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(154, 160, 166, .8)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+  background-size: 12px 12px;
+  background-image: url('./trash.svg');
 }
 .connection .close:hover {
   background-color: #5f6368;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .7)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
-}
-.connection .close:hover:active {
-  background-color: #80868b;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .9)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
-}
-.connection .edit {
-  display: flex;
-  flex-direction: column;
-  flex-basis: 16px;
-  position: relative;
-  margin-right: 12px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: 8px 8px;
-  background-image: url("./pencil-edit-button.svg");
-}
-.connection .edit:hover {
-  background-color: #5f6368;
-  background-image: url("./pencil-edit-button-hover.svg");
-}
-.connection .edit:hover:active {
-  background-color: #80868b;
-  background-image: url("./pencil-edit-button-hover.svg");
+  background-image: url('./trash-hover.svg');
 }
 /* Customize scrollbar like Mac OS */
 /* total width */
@@ -185,7 +164,9 @@ body {
   width: 8px;
 }
 /* background of the scrollbar except button or resizer */
-#connBox::-webkit-scrollbar-track { background-color: transparent; }
+#connBox::-webkit-scrollbar-track {
+  background-color: transparent;
+}
 /* scrollbar itself */
 #connBox::-webkit-scrollbar-thumb {
   background-color: transparent;
