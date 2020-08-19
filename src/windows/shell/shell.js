@@ -1,9 +1,17 @@
-const { Client } = require('ssh2');
+const { shell: electronShell, ipcRenderer } = require('electron');
+let currentTheme = 'defaultLightTheme';
+ipcRenderer.invoke('get-theme').then((theme) => {
+  chromeTabsEl.classList.add(theme);
+  document.getElementById('containers').style.backgroundColor =
+  themes[theme].background;
+  document.body.style.backgroundColor = themes[theme].background;
+  currentTheme = theme;
+});
+
 const { Terminal } = require('xterm');
 const { FitAddon } = require('xterm-addon-fit');
 const { WebglAddon } = require('xterm-addon-webgl');
 const { WebLinksAddon } = require('xterm-addon-web-links');
-const { shell: electronShell, ipcRenderer } = require('electron');
 const fontFaceObserver = require('fontfaceobserver');
 const MenloFont = new fontFaceObserver('Menlo');
 const { Instance } = require('chalk');
@@ -11,11 +19,6 @@ const chromeTabsEl = document.querySelector('.chrome-tabs');
 const chromeTabs = new ChromeTabs(chromeTabsEl);
 const chalk = new Instance({ level: 2 });
 const terms = {};
-let currentTheme = 'defaultLightTheme';
-ipcRenderer.invoke('get-theme').then((theme) => {
-  currentTheme = theme;
-  chromeTabsEl.classList.add(theme); // TODO: change
-});
 
 async function createTerminal(connection, containerElement) {
   const theme = themes[await ipcRenderer.invoke('get-theme')];
@@ -38,8 +41,6 @@ async function createTerminal(connection, containerElement) {
     letterSpacing: 1,
     theme,
   });
-  document.getElementById('containers').style.backgroundColor =
-    theme.background;
   const fitAddon = new FitAddon();
   term.loadAddon(fitAddon);
   term.loadAddon(
@@ -53,6 +54,7 @@ async function createTerminal(connection, containerElement) {
   fitAddon.fit();
 
   if (connection.type === 'SSH') {
+    const { Client } = require('ssh2');
     const conn = new Client();
     conn.on('ready', () => {
       conn.shell(
@@ -99,12 +101,7 @@ async function createTerminal(connection, containerElement) {
       return onError(term, 'Connection end by you.');
     });
 
-    conn.on('close', (err) => {
-      if (err) {
-        return onError(term, err);
-      }
-      return onError(term, 'Connection Closed.');
-    });
+    conn.on('close', () => onError(term, 'Connection Closed.'));
 
     conn.on('error', (err) => {
       if (err) {
@@ -138,10 +135,7 @@ async function createTerminal(connection, containerElement) {
       return onError(term, 'Connection end by you.');
     });
 
-    conn.on('close', (err) => {
-      if (err) {
-        return onError(term, err);
-      }
+    conn.on('close', () => {
       return onError(term, 'Connection Closed.');
     });
 
@@ -158,7 +152,6 @@ async function createTerminal(connection, containerElement) {
 function onError(term, err) {
   term.setOption('disableStdin', true);
   if (err) {
-    term.writeln(chalk.red(`Error: ${err.message}`));
     if (err.message) {
       term.writeln(chalk.red(`Error: ${err.message}`));
     } else {

@@ -23,7 +23,6 @@ const defaultLightTheme = {
 };
 
 const solorizedLightTheme = {
-  tabBackground: '#e6dfcb',
   header: '#657B83',
   background: '#fdf6e3',
   foreground: '#839496',
@@ -49,7 +48,7 @@ const solorizedLightTheme = {
 };
 
 const materialTheme = {
-  background: '#333333',
+  background: '#263238',
   foreground: '#ECEFF1',
   black: '#000',
   red: '#E54B4B',

@@ -12,7 +12,7 @@
   margin-bottom: 0;
   width: 100%;
   position: fixed;
-  top: 0;
+  top: -1px;
   z-index: 100;
   -webkit-app-region: drag;
   -webkit-user-select: none;
@@ -39,7 +39,6 @@
   height: 32px;
   width: 240px;
   max-width: 250px;
-  border: 0;
   margin: 0;
   z-index: 1;
   pointer-events: none;
@@ -54,8 +53,8 @@
   position: absolute;
   top: 7px;
   bottom: 7px;
-  left: 9px;
-  right: 9px;
+  left: 8px;
+  right: 8px;
 }
 .chrome-tabs .chrome-tab .chrome-tab-dividers,
 .chrome-tabs .chrome-tab .chrome-tab-dividers::before,
@@ -116,16 +115,16 @@
 }
 .chrome-tabs .chrome-tab.chrome-tab-was-just-added {
   top: 10px;
-  animation: chrome-tab-was-just-added 150ms forwards ease-in-out;
+  animation: chrome-tab-was-just-added 100ms forwards ease-in-out;
 }
 .chrome-tabs .chrome-tab .chrome-tab-content {
   position: absolute;
   display: flex;
   top: 0;
   bottom: 0;
-  left: 9px;
-  right: 9px;
-  padding: 9px 8px;
+  left: 8px;
+  right: 8px;
+  padding: 8px 8px;
   overflow: hidden;
   pointer-events: all;
 }
@@ -206,11 +205,6 @@
   margin-left: auto;
   margin-right: auto;
 }
-@-webkit-keyframes chrome-tab-was-just-added {
-  to {
-    top: 0;
-  }
-}
 @keyframes chrome-tab-was-just-added {
   to {
     top: 0;
@@ -219,7 +213,7 @@
 .chrome-tabs.chrome-tabs-is-sorting .chrome-tab:not(.chrome-tab-is-dragging),
 .chrome-tabs:not(.chrome-tabs-is-sorting)
   .chrome-tab.chrome-tab-was-just-dragged {
-  transition: transform 120ms ease-in-out;
+  transition: transform 100ms ease-in-out;
 }
 
 /* Dark THEME */
@@ -238,13 +232,13 @@
   color: #FFF;
 }
 .chrome-tabs.defaultBlackTheme .chrome-tab[active] .chrome-tab-title {
-  color: rgba(255, 255, 255, .05);
+  color: #FFF;
 }
 .chrome-tabs.defaultBlackTheme .chrome-tab .chrome-tab-close {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgb(255,255,255)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
 }
 .chrome-tabs.defaultBlackTheme .chrome-tab .chrome-tab-close:hover {
-  background-color: #686868;
+  background-color: rgba(0, 0, 0, .65);
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .7)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
 }
 .chrome-tabs.defaultBlackTheme .chrome-tab .chrome-tab-close:hover:active {
@@ -254,11 +248,12 @@
 
 /* Material THEME */
 .chrome-tabs.materialTheme .chrome-tab[active] .chrome-tab-content {
-  background-color: #333333;
+  background-color: #263238;
+  border-bottom: 2px #00E5E5 solid;
 }
 
 .chrome-tabs.materialTheme {
-  background: #333333;
+  background: #263238;
 }
 .chrome-tabs.materialTheme .chrome-tab .chrome-tab-dividers::before,
 .chrome-tabs.materialTheme .chrome-tab .chrome-tab-dividers::after {
