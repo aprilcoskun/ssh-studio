@@ -23,6 +23,7 @@
     "electron-builder": "^22.8.0"
   },
   "dependencies": {
+    "about-window": "^1.13.4",
     "chalk": "^4.1.0",
     "draggabilly": "^2.3.0",
     "electron-context-menu": "^2.3.0",

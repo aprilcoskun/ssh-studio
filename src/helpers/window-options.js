@@ -1,3 +1,7 @@
+/**
+ * @param {boolean} isDev 
+ * @returns {Electron.BrowserWindowConstructorOptions} 
+ */
 module.exports.welcomeWindowOptions = (isDev) => ({
   title: 'SSH Studio',
   width: 704,
@@ -14,6 +18,10 @@ module.exports.welcomeWindowOptions = (isDev) => ({
   },
 })
 
+/**
+ * @param {boolean} isDev 
+ * @returns {Electron.BrowserWindowConstructorOptions} 
+ */
 module.exports.shellWindowOptions = (isDev) => ({
   title: 'Shell',
   width: 880,
@@ -31,6 +39,10 @@ module.exports.shellWindowOptions = (isDev) => ({
   },
 })
 
+/**
+ * @param {boolean} isDev 
+ * @returns {Electron.BrowserWindowConstructorOptions} 
+ */
 module.exports.addNewWindowOptions = (isDev) => ({
   title: 'Add New Connection to SSH Studio',
   backgroundColor: '#f5f5f9',
